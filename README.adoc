@@ -1,0 +1,22 @@
+= Advent of Code 2024
+
+This repository contains my solution to 2024's https://adventofcode.com/2024[Advent of Code] puzzles in Haskell.
+
+Each day is an individual program. Use e.g. `ghc --run 01.hs` to run.
+
+I have separate repositories for solutions from previous years:
+
+ - https://github.com/csmith/aoc-2023[2023] (Nim)
+ - https://github.com/csmith/aoc-2022[2022] (Golang)
+ - https://github.com/csmith/aoc-2021[2021] (AWK)
+ - https://github.com/csmith/aoc-2020[2020] (Golang)
+ - https://github.com/csmith/aoc-2019[2019] (Golang)
+ - https://github.com/csmith/aoc-2018[2018] (Nim)
+ - https://github.com/csmith/aoc-2017[2017] (Python)
+ - https://github.com/csmith/aoc-2016[2016] (Python)
+ - https://github.com/csmith/aoc-2015[2015] (Python)
+
+'''
+
+To the extent possible under law, I waive all copyright and related or neighbouring rights to this work. This work is
+published from the United Kingdom. See link:LICENCE.md[LICENCE.md] for full details.

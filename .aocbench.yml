@@ -1,0 +1,11 @@
+version: 1
+author: "MD87"
+language: "Haskell"
+image: "haskell"
+code: "/code"
+workdir: "/code"
+"runonce": "ghc -O2 %zeroday%.hs"
+cmd: "./%zeroday%"
+daypath: "%zeroday%.hs"
+inputfile: "inputs/%zeroday%.txt"
+answerfile: "answers/%zeroday%.txt"
