@@ -1,29 +1,20 @@
 module Main where
 
-import Data.List
-
-parseLine :: String -> [Int]
-parseLine = map read . words
+import Data.List ( sort, transpose )
 
 parseInput :: [String] -> [[Int]]
-parseInput = map sort . transpose . map parseLine
-
-diff :: [Int] -> Int
-diff [x, y] = abs (x - y)
+parseInput = map sort . transpose . map (map read . words)
 
 partOne :: [[Int]] -> Int
-partOne = sum . map diff . transpose
-
-matches :: ([Int], [Int]) -> [Int]
-matches (_, []) = []
-matches ([], _) = []
-matches (lh : ls, rh : rs)
-  | lh == rh = takeWhile (== lh) (rh : rs) ++ matches (ls, rh : rs)
-  | lh > rh = matches (lh : ls, rs)
-  | rh > lh = matches (ls, rh : rs)
+partOne = sum . map (\[x, y] -> abs (x - y)) . transpose
 
 partTwo :: [[Int]] -> Int
-partTwo [l, r] = sum $ matches (l, r)
+partTwo [_, []] = 0
+partTwo [[], _] = 0
+partTwo [lh : ls, rh : rs]
+  | lh == rh = partTwo [ls, rh : rs] + sum (takeWhile (== lh) (rh : rs))
+  | lh > rh = partTwo [lh : ls, rs]
+  | rh > lh = partTwo [ls, rh : rs]
 
 main = do
   input <- parseInput . lines <$> readFile "inputs/01.txt"
