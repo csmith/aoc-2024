@@ -16,6 +16,7 @@ partTwo [lh : ls, rh : rs]
   | lh > rh = partTwo [lh : ls, rs]
   | rh > lh = partTwo [ls, rh : rs]
 
+main :: IO ()
 main = do
   input <- parseInput . lines <$> readFile "inputs/01.txt"
   print $ partOne input
