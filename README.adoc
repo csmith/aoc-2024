@@ -4,6 +4,10 @@ This repository contains my solution to 2024's https://adventofcode.com/2024[Adv
 
 Each day is an individual program. Use e.g. `ghc --run 01.hs` to run.
 
+Eric has requested that people no longer publish their puzzle inputs so the ones here are encrypted using
+https://github.com/elasticdog/transcrypt[Transcrypt]. If you want to test against my input for whatever
+reason, get in touch.
+
 I have separate repositories for solutions from previous years:
 
  - https://github.com/csmith/aoc-2023[2023] (Nim)
