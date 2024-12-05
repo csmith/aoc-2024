@@ -2,44 +2,30 @@ module Main where
 
 import Data.List (sortBy)
 import Data.List.Split (splitOn)
-import Data.Set (fromList, member, Set)
+import Data.Set (Set, fromList, member)
 
-parseInput :: String -> (Set (Int, Int), [[Int]])
-parseInput x = (rulesMap, updates)
+parseInput :: String -> (Set (String, String), [[String]])
+parseInput x = (rules, updates)
   where
     halves = break null $ lines x
-    rules :: [[Int]] = map (map read . splitOn "|") $ fst halves
-    rulesMap = fromList $ map (\x -> (head x, x !! 1)) rules
-    updates :: [[Int]] = map (map read . splitOn ",") $ tail $ snd halves
+    rules = fromList $ map (\x -> (take 2 x, drop 3 x)) (fst halves)
+    updates = map (splitOn ",") $ tail $ snd halves
 
-middle :: [Int] -> Int
-middle x = x !! (length x `div` 2)
-
--- Pairs each update with a correctly sorted version of itself.
-withSorted :: Set (Int, Int) -> [[Int]] -> [([Int], [Int])]
-withSorted rules = map (\x -> (x, sortBy ordering x))
-    where
+solve :: Set (String, String) -> [[String]] -> (Int, Int)
+solve rules = foldl check (0, 0)
+  where
+    check (p1, p2) original
+      | original /= sorted = (p1, p2 + read (mid sorted))
+      | otherwise = (p1 + read (mid original), p2)
+      where
+        mid x = x !! (length x `div` 2)
+        sorted = sortBy ordering original
         ordering a b
-            | member (a,b) rules = LT
-            | member (b,a) rules = GT
-            | otherwise = EQ
-
-partOne :: [([Int], [Int])] -> Int
-partOne = sum . map value
-    where
-        value (left, right)
-            | left == right = middle left
-            | otherwise = 0
-
-partTwo :: [([Int], [Int])] -> Int
-partTwo = sum . map value
-    where
-        value (left, right)
-            | left /= right = middle right
-            | otherwise = 0
+          | member (a, b) rules = LT
+          | otherwise = GT
 
 main :: IO ()
 main = do
-  sorted <- uncurry withSorted . parseInput <$> readFile "inputs/05.txt"
-  print $ partOne sorted
-  print $ partTwo sorted
+  (partOne, partTwo) <- uncurry solve . parseInput <$> readFile "inputs/05.txt"
+  print partOne
+  print partTwo
