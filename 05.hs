@@ -3,7 +3,6 @@ module Main where
 import Data.List (elemIndex, sortBy, sort)
 import Data.List.Split (splitOn)
 import Data.Maybe (fromMaybe)
-import GHC.Generics ((:.:)(Comp1))
 
 parseInput :: String -> ([[Int]], [[Int]])
 parseInput x = (rules, updates)
