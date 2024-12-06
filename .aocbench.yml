@@ -3,6 +3,8 @@ author: "MD87"
 language: "Haskell"
 dockerfile: "Dockerfile"
 code: "/code"
+common:
+  - "Common.hs"
 workdir: "/code"
 runonce: "ghc -O2 %zeroday%.hs"
 cmd: "./%zeroday%"
