@@ -30,38 +30,36 @@ patrol grid pos
   where
     next = step grid (-1, -1) pos
 
-loops :: Grid -> Coord -> Position -> Bool
-loops = loop S.empty
-  where
-    loop :: S.Set Position -> Grid -> Coord -> Position -> Bool
-    loop visited grid obstacle pos
-      | S.member pos visited = True
-      | isNothing next = False
-      | otherwise = loop (S.insert pos visited) grid obstacle (fromJust next)
-      where
-        next = step grid obstacle pos
-
 partOne :: [Position] -> Int
 partOne = length . S.fromList . map fst
 
 partTwo :: Grid -> [Position] -> Int
 partTwo grid path = length $ S.fromList $ scan S.empty grid path
     where
-    scan :: S.Set Coord -> Grid -> [Position] -> [Coord]
+    scan :: S.Set Position -> Grid -> [Position] -> [Coord]
     scan _ _ [] = []
     scan _ _ [_] = []
     scan visited grid (pos:next:others)
         -- Just spinning on the spot, don't drop an obstacle on their head
         | currentCoord == nextCoord = scan visited grid (next:others)
         -- We've already travelled over the next cell, can't block it
-        | S.member nextCoord visited = scan visited grid (next:others)
+        | S.member nextCoord visitedCoords = scan visited grid (next:others)
         -- Placing an obstacle in front of us causes a loop
-        | loops grid nextCoord pos = nextCoord:scan (S.insert nextCoord visited) grid (next:others)
+        | loop visited grid nextCoord pos = nextCoord:scan (S.insert next visited) grid (next:others)
         -- Obstacle in front doesn't work
-        | otherwise = scan (S.insert nextCoord visited) grid (next:others)
+        | otherwise = scan (S.insert next visited) grid (next:others)
         where
             currentCoord = fst pos
             nextCoord = fst next
+            visitedCoords = S.map fst visited
+
+            loop :: S.Set Position -> Grid -> Coord -> Position -> Bool
+            loop visited grid obstacle pos
+              | isNothing next = False
+              | S.member (fromJust next) visited = True
+              | otherwise = loop (S.insert pos visited) grid obstacle (fromJust next)
+              where
+                next = step grid obstacle pos
 
 
 main :: IO ()
