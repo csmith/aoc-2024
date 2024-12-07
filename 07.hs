@@ -23,7 +23,12 @@ partTwoExpand :: [Int] -> [Int] -> [Int]
 partTwoExpand = foldl (\inputs value -> map (* value) inputs ++ map (+ value) inputs ++ map (cc value) inputs)
 
 cc :: Int -> Int -> Int
-cc b a = read ("" ++ show a ++ show b)
+cc b a = a * 10 ^ digitCount b + b
+
+digitCount :: Int -> Int
+digitCount = go 1
+    where
+        go digits target = if target >= 10 then go (digits + 1) (div target 10) else digits
 
 main :: IO ()
 main = do
