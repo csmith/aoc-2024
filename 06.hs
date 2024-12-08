@@ -34,7 +34,7 @@ partOne :: [Position] -> Int
 partOne = unique . map fst
 
 partTwo :: Grid -> [Position] -> Int
-partTwo grid path = unique $ scan S.empty S.empty grid path
+partTwo grid path = unique $ scan (S.singleton $ fst $ head path)  S.empty grid path
   where
     -- Keep two sets of history around:
     --
