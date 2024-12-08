@@ -1,6 +1,8 @@
 module Common where
 
 import Data.Array.IArray
+import Data.List as L
+import Data.Set as S
 
 type Grid = Array (Int, Int) Char
 type Coord = (Int, Int)
@@ -21,3 +23,12 @@ parseGrid text = listArray ((0, 0), (numrows - 1, numcols - 1)) $ concat rows
 
 add :: (Int, Int) -> (Int, Int) -> (Int, Int)
 add (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
+
+sub :: (Int, Int) -> (Int, Int) -> (Int, Int)
+sub (x1, y1) (x2, y2) = (x1 - x2, y1 - y2)
+
+unique :: Ord a => [a] -> Int
+unique = length . S.fromList
+
+combinations :: Int -> [a] -> [[a]]
+combinations k = L.filter ((k==).length) . L.subsequences
