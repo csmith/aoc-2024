@@ -6,7 +6,7 @@ parseInput :: String -> [[String]]
 parseInput s = s =~ "do\\(\\)|don't\\(\\)|mul\\(([0-9]+),([0-9]+)\\)" :: [[String]]
 
 partOne :: [[String]] -> Int
-partOne x = sum $ map process x
+partOne = sum . map process
   where
     -- Part one only cares about mul(), but we're feeding it the do and don'ts
     -- to avoid parsing the input multiple times. Just ignore them.
@@ -15,7 +15,7 @@ partOne x = sum $ map process x
     process [_, x, y] = read x * read y
 
 partTwo :: [[String]] -> Int
-partTwo x = snd $ foldl process (True, 0) x
+partTwo = snd . foldl process (True, 0)
   where
     -- If we encounter a "do()" then enable future operations
     process (_, i) ["do()", _, _] = (True, i)
@@ -29,5 +29,5 @@ partTwo x = snd $ foldl process (True, 0) x
 main :: IO ()
 main = do
   input <- parseInput <$> readFile "inputs/03.txt"
-  print (partOne input)
-  print (partTwo input)
+  print $ partOne input
+  print $ partTwo input

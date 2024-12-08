@@ -1,6 +1,6 @@
 module Main where
 
-import Common (Grid, add, outOfBounds, parseGrid, Direction, Coord)
+import Common (Coord, Direction, Grid, add, count, outOfBounds, parseGrid)
 import Data.Array.IArray (IArray (bounds), indices, (!))
 
 directions :: [Direction]
@@ -19,10 +19,10 @@ matches grid (chr : rest) position direction
 partOne :: Grid -> Int
 partOne grid = sum $ map scan (indices grid)
   where
-    scan pos = length $ filter (== True) $ map (matches grid "XMAS" pos) directions
+    scan pos = count (== True) $ map (matches grid "XMAS" pos) directions
 
 partTwo :: Grid -> Int
-partTwo grid = length $ filter (== True) $ map scan (indices grid)
+partTwo grid = count (== True) $ map scan (indices grid)
   where
     scan pos
       | at pos /= 'A' = False

@@ -8,7 +8,7 @@ parseInput line = (read (takeWhile (/= ':') target), map read values)
     (target : values) = words line
 
 solve :: [(Int, [Int])] -> (Int, Int)
-solve lines = foldl add (0, 0) (map evaluate lines)
+solve = foldl add (0, 0) . map evaluate
 
 evaluate :: (Int, [Int]) -> (Int, Int)
 evaluate (target, initial : values)

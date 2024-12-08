@@ -1,6 +1,6 @@
 module Main where
 
-import Data.List ( sort, transpose )
+import Data.List (sort, transpose)
 
 parseInput :: [String] -> [[Int]]
 parseInput = map sort . transpose . map (map read . words)
