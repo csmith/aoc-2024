@@ -3,6 +3,7 @@ module Common where
 import Data.Array.IArray (Array, IArray (bounds), listArray)
 import Data.List (filter, subsequences)
 import Data.Set (fromList)
+import Data.Char (isSpace)
 
 type Grid = Array (Int, Int) Char
 
@@ -44,3 +45,6 @@ count f x = length $ filter f x
 -- Returns all possible combinations of length k of the given elements.
 combinations :: Int -> [a] -> [[a]]
 combinations k = filter ((k ==) . length) . subsequences
+
+stripTrailingSpaces :: [Char] -> [Char]
+stripTrailingSpaces = reverse . dropWhile isSpace . reverse
