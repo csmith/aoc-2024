@@ -3,6 +3,7 @@ module Main where
 import Common (stripTrailingSpaces)
 import Data.Char (digitToInt)
 import Data.List (delete)
+import Debug.Trace
 
 type Id = Int
 
@@ -30,27 +31,42 @@ partOne pos (Space length : xs) = case end of
   where
     end = last xs
 
--- Doesn't actually solve part two. Instead does basically the same as part one,
--- but moves whole files. Yay poorly worded instructions.
-partTwo :: Position -> [Record] -> Int
-partTwo _ [] = 0
-partTwo _ [Space _] = 0
-partTwo pos [File id length] = checksum pos length id
-partTwo pos (File id length : xs) = checksum pos length id + partTwo (pos + length) xs
-partTwo pos (Space length : xs)
-  | length == 0 = partTwo pos xs
-  | null matches = partTwo (pos + length) xs
-  | otherwise = partTwo pos ([match, Space (length - matchLength)] ++ delete match xs)
+partTwo :: Int -> [Record] -> [Record]
+partTwo _ [] = []
+partTwo _ [Space l] = [Space l]
+partTwo max (Space l : xs) = Space l : partTwo max xs
+partTwo max (File id length : xs)
+  | id > max = File id length : partTwo max xs
+  | null targets = File id length : partTwo max xs
+  | targetLength == length = Space length : partTwo id (reverse $ replace target [File id length] (reverse xs))
+  | otherwise = Space length : partTwo id (reverse $ replace target [File id length, Space (targetLength - length)] (reverse xs))
   where
-    shortEnough length (File _ f1) = f1 <= length
-    shortEnough _ (Space _) = False
-    matches = reverse $ filter (shortEnough length) xs
-    match = head matches
-    fileLength (File _ l) = l
-    matchLength = fileLength match
+    slength (Space l) = l
+    targetLength = slength target
+    target = head targets
+    targets = reverse (filter fits xs)
+    fits (File _ _) = False
+    fits (Space l) = l >= length
+    replace match target [] = []
+    replace match target [x]
+      | x == match = target
+      | otherwise = [x]
+    replace match target (x : xs)
+      | x == match = target ++ xs
+      | otherwise = x : replace match target xs
 
 checksum :: Position -> Length -> Id -> Int
 checksum pos length id = id * (length * pos + (length - 1) * length `div` 2)
+
+checksumPartTwo :: [Record] -> Int
+checksumPartTwo = sum . go 0
+  where
+    go :: Int -> [Record] -> [Int]
+    go pos [] = []
+    go pos [Space _] = [0]
+    go pos [File id length] = [checksum pos length id]
+    go pos ((Space l) : xs) = go (pos + l) xs
+    go pos ((File id length) : xs) = checksum pos length id : go (pos + length) xs
 
 parseInput :: String -> [Record]
 parseInput = parseFile 0 . stripTrailingSpaces
@@ -63,4 +79,4 @@ main :: IO ()
 main = do
   l <- parseInput <$> readFile "inputs/09.txt"
   print $ partOne 0 l
-  print $ partTwo 0 l
+  print $ checksumPartTwo $ reverse $ partTwo (length l) (reverse l)
