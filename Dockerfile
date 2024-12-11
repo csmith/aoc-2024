@@ -5,4 +5,5 @@ RUN cabal update \
       array \
       containers \
       regex-tdfa \
-      split
+      split \
+      uglymemo
