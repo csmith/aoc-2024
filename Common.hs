@@ -1,25 +1,27 @@
 module Common where
 
 import Data.Array.IArray (Array, IArray (bounds), listArray)
+import Data.Char (isSpace)
 import Data.List (filter, subsequences)
 import Data.Set (fromList)
-import Data.Char (isSpace)
-
-type Grid = Array (Int, Int) Char
 
 type Coord = (Int, Int)
+
+type Grid a = Array Coord a
+
+type CharGrid = Grid Char
 
 type Direction = (Int, Int)
 
 -- Checks if a given co-ordinate lies outside the bounds of the grid.
-outOfBounds :: Grid -> Coord -> Bool
+outOfBounds :: Grid a -> Coord -> Bool
 outOfBounds grid position = x < minx || x > maxx || y < miny || y > maxy
   where
     ((minx, miny), (maxx, maxy)) = bounds grid
     (x, y) = position
 
 -- Parses an ASCII grid into an array.
-parseGrid :: String -> Grid
+parseGrid :: String -> CharGrid
 parseGrid text = listArray ((0, 0), (numrows - 1, numcols - 1)) $ concat rows
   where
     rows = lines text
@@ -46,5 +48,14 @@ count f x = length $ filter f x
 combinations :: Int -> [a] -> [[a]]
 combinations k = filter ((k ==) . length) . subsequences
 
+-- Removes trailing spaces really inefficiently
 stripTrailingSpaces :: [Char] -> [Char]
 stripTrailingSpaces = reverse . dropWhile isSpace . reverse
+
+-- The set of cardinal directions
+cardinals :: [Coord]
+cardinals = [(0, -1), (0, 1), (1, 0), (-1, 0)]
+
+-- Finds the in-bound orthogonal neighbours of the given co-ordinate.
+neighbours :: Grid a -> Coord -> [Coord]
+neighbours grid coord = filter (not . outOfBounds grid) $ map (add coord) cardinals

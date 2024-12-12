@@ -1,23 +1,20 @@
 module Main where
 
-import Common (Coord, Grid, add, outOfBounds, parseGrid, unique)
+import Common (Coord, CharGrid, add, parseGrid, unique, neighbours)
 import Data.Array.IArray (assocs, (!))
 import Data.Char (digitToInt)
 
-cardinals :: [Coord]
-cardinals = [(0, -1), (0, 1), (1, 0), (-1, 0)]
-
-findPaths :: Grid -> [(Coord, [Coord])]
+findPaths :: CharGrid -> [(Coord, [Coord])]
 findPaths grid = map (\x -> (x, trace 0 x)) (starts grid)
   where
     starts = map fst . filter ((== '0') . snd) . assocs
     trace :: Int -> Coord -> [Coord]
     trace target coord
       | value == 9 = [coord]
-      | otherwise = concatMap (trace (target + 1)) neighbours
+      | otherwise = concatMap (trace (target + 1)) n
       where
         value = digitToInt $ grid ! coord
-        neighbours = filter ((== target + 1) . digitToInt . (grid !)) $ filter (not . outOfBounds grid) $ map (add coord) cardinals
+        n = filter ((== target + 1) . digitToInt . (grid !)) $ neighbours grid coord
 
 partOne :: [(Coord, [Coord])] -> Int
 partOne = sum . map (unique . snd)

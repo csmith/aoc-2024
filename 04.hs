@@ -1,12 +1,12 @@
 module Main where
 
-import Common (Coord, Direction, Grid, add, count, outOfBounds, parseGrid)
+import Common (Coord, Direction, CharGrid, add, count, outOfBounds, parseGrid)
 import Data.Array.IArray (IArray (bounds), indices, (!))
 
 directions :: [Direction]
 directions = [(0, 1), (0, -1), (1, 1), (1, 0), (1, -1), (-1, 1), (-1, 0), (-1, -1)]
 
-matches :: Grid -> String -> Coord -> Direction -> Bool
+matches :: CharGrid -> String -> Coord -> Direction -> Bool
 matches _ [] _ _ = True
 matches grid (chr : rest) position direction
   | outOfBounds grid position = False
@@ -16,12 +16,12 @@ matches grid (chr : rest) position direction
     b = bounds grid
     c = grid ! position
 
-partOne :: Grid -> Int
+partOne :: CharGrid -> Int
 partOne grid = sum $ map scan (indices grid)
   where
     scan pos = count (== True) $ map (matches grid "XMAS" pos) directions
 
-partTwo :: Grid -> Int
+partTwo :: CharGrid -> Int
 partTwo grid = count (== True) $ map scan (indices grid)
   where
     scan pos

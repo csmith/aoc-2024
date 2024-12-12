@@ -3,7 +3,6 @@ module Main where
 import Common (stripTrailingSpaces)
 import Data.Char (digitToInt)
 import Data.List (delete)
-import Debug.Trace
 
 type Id = Int
 

@@ -1,6 +1,6 @@
 module Main where
 
-import Common (Coord, Direction, Grid, add, outOfBounds, parseGrid, unique)
+import Common (Coord, Direction, CharGrid, add, outOfBounds, parseGrid, unique)
 import Data.Array.IArray (assocs, (!))
 import Data.List (find)
 import Data.Maybe (fromJust, isNothing)
@@ -14,7 +14,7 @@ rotate (0, 1) = (1, 0)
 rotate (1, 0) = (0, -1)
 rotate (0, -1) = (-1, 0)
 
-step :: Grid -> Coord -> Position -> Maybe Position
+step :: CharGrid -> Coord -> Position -> Maybe Position
 step grid obstacle (coord, dir)
   | outOfBounds grid next = Nothing
   | next == obstacle = Just (coord, rotate dir)
@@ -23,7 +23,7 @@ step grid obstacle (coord, dir)
   where
     next = add coord dir
 
-patrol :: Grid -> Position -> [Position]
+patrol :: CharGrid -> Position -> [Position]
 patrol grid pos
   | isNothing next = [pos]
   | otherwise = pos : patrol grid (fromJust next)
@@ -33,7 +33,7 @@ patrol grid pos
 partOne :: [Position] -> Int
 partOne = unique . map fst
 
-partTwo :: Grid -> [Position] -> Int
+partTwo :: CharGrid -> [Position] -> Int
 partTwo grid path = unique $ scan (S.singleton $ fst $ head path)  S.empty grid path
   where
     -- Keep two sets of history around:
@@ -44,7 +44,7 @@ partTwo grid path = unique $ scan (S.singleton $ fst $ head path)  S.empty grid 
     --  A set of positions (co-ordinates + directions) we've previously seen
     --  to bootstrap the loop detector with. For performance reasons, we only
     --  put corners in this set.
-    scan :: S.Set Coord -> S.Set Position -> Grid -> [Position] -> [Coord]
+    scan :: S.Set Coord -> S.Set Position -> CharGrid -> [Position] -> [Coord]
     scan _ _ _ [] = []
     scan _ _ _ [_] = []
     scan visitedCoords visited grid (pos : next : others)
@@ -60,7 +60,7 @@ partTwo grid path = unique $ scan (S.singleton $ fst $ head path)  S.empty grid 
         currentCoord = fst pos
         nextCoord = fst next
 
-        loop :: S.Set Position -> Grid -> Coord -> Position -> Bool
+        loop :: S.Set Position -> CharGrid -> Coord -> Position -> Bool
         loop visited grid obstacle pos
           -- Leaving the grid, definitely no loop!
           | isNothing next = False
